@@ -1,0 +1,34 @@
+﻿<%- include('../partials/header') %>
+
+<div class="grid gap-6 lg:grid-cols-[280px_1fr]">
+  <%- include('../partials/admin-nav') %>
+  <section>
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-semibold">Posts</h1>
+      <a class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-900" href="/admin/posts/new">New post</a>
+    </div>
+    <div class="mt-6 grid gap-4">
+      <% posts.forEach(function(post) { %>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-slate-400"><%= formatDate(post.createdAt) %> ・ <%= post.status %></p>
+            <h3 class="text-lg font-semibold"><%= post.title %></h3>
+            <p class="text-sm text-slate-300">Category: <%= post.category?.name || 'General' %></p>
+          </div>
+          <div class="flex gap-2">
+            <a class="rounded-full border border-slate-700 px-3 py-1 text-xs" href="/admin/posts/<%= post._id %>/edit">Edit</a>
+            <form method="post" action="/admin/posts/<%= post._id %>/delete">
+              <button class="rounded-full border border-red-500/60 px-3 py-1 text-xs text-red-300" type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+      <% if (!posts.length) { %>
+        <p class="text-sm text-slate-400">No posts yet.</p>
+      <% } %>
+    </div>
+  </section>
+</div>
+
+<%- include('../partials/footer') %>
+

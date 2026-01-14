@@ -1,0 +1,44 @@
+﻿<%- include('../partials/header') %>
+
+<article class="max-w-3xl">
+  <p class="text-xs text-slate-400"><%= formatDate(post.publishedAt || post.createdAt) %> ・ <%= estimateReadTime(post.content) %></p>
+  <h1 class="mt-3 text-3xl font-bold"><%= post.title %></h1>
+  <p class="mt-3 text-slate-300"><%= post.excerpt %></p>
+  <% if (post.coverImagePath) { %>
+    <img class="mt-6 w-full rounded-2xl object-cover" src="<%= post.coverImagePath %>" alt="<%= post.title %>" />
+  <% } %>
+  <div class="prose prose-invert mt-8 max-w-none">
+    <%= post.content %>
+  </div>
+  <div class="mt-6 flex flex-wrap gap-2 text-xs">
+    <a class="rounded-full border border-slate-700 px-3 py-1" href="/category/<%= post.category?.slug %>"><%= post.category?.name || 'General' %></a>
+    <% post.tags.forEach(function(tag) { %>
+      <a class="rounded-full border border-slate-700 px-3 py-1" href="/tag/<%= encodeURIComponent(tag) %>">#<%= tag %></a>
+    <% }) %>
+  </div>
+  <div class="mt-8 border-t border-slate-800 pt-6 text-sm">
+    <p class="text-slate-400">Share</p>
+    <div class="mt-2 flex gap-3">
+      <a class="underline" href="https://twitter.com/intent/tweet?url=<%= baseUrl %>/blog/<%= post.slug %>" target="_blank" rel="noreferrer">Twitter</a>
+      <a class="underline" href="https://www.linkedin.com/sharing/share-offsite/?url=<%= baseUrl %>/blog/<%= post.slug %>" target="_blank" rel="noreferrer">LinkedIn</a>
+    </div>
+  </div>
+</article>
+
+<section class="mt-12">
+  <h2 class="text-xl font-semibold">Related posts</h2>
+  <div class="mt-4 grid gap-4 md:grid-cols-3">
+    <% related.forEach(function(item) { %>
+      <a class="rounded-xl border border-slate-800 p-4 hover:border-slate-700" href="/blog/<%= item.slug %>">
+        <p class="text-xs text-slate-400"><%= formatDate(item.publishedAt || item.createdAt) %></p>
+        <p class="mt-2 text-sm font-semibold"><%= item.title %></p>
+      </a>
+    <% }) %>
+    <% if (!related.length) { %>
+      <p class="text-sm text-slate-400">No related posts yet.</p>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>
+
