@@ -26,7 +26,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        'img-src': ["'self'", 'data:', 'https://res.cloudinary.com'],
+        'script-src': ["'self'", 'https://cdn.jsdelivr.net'],
+        'script-src-elem': ["'self'", 'https://cdn.jsdelivr.net'],
+        'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdn.jsdelivr.net'],
+        'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:'],
+        'frame-src': ["'self'", 'blob:'],
+        'connect-src': ["'self'", 'https://cdn.jsdelivr.net']
+      }
+    }
+  })
+);
 app.use(mongoSanitize());
 app.use(
   rateLimit({

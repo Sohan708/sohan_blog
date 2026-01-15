@@ -18,7 +18,6 @@ const postSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-postSchema.index({ slug: 1 }, { unique: true });
 postSchema.index({ category: 1 });
 postSchema.index({ tags: 1 });
 postSchema.index({ status: 1, publishedAt: -1 });

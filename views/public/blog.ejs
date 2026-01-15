@@ -1,34 +1,32 @@
-﻿<%- include('../partials/header') %>
+<%- include('../partials/header') %>
 
-<section class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6">
-  <form class="grid gap-4 md:grid-cols-4" method="get" action="/blog">
-    <input class="rounded-xl border border-slate-700 bg-slate-950 px-4 py-2 text-sm" type="text" name="q" placeholder="Search" value="<%= q %>" />
-    <select class="rounded-xl border border-slate-700 bg-slate-950 px-4 py-2 text-sm" name="category">
+<section class="card filter-card">
+  <form class="form-grid" method="get" action="/blog">
+    <input class="field" type="text" name="q" placeholder="Search" value="<%= q %>" />
+    <select class="field" name="category">
       <option value="">All categories</option>
       <% categories.forEach(function(cat) { %>
         <option value="<%= cat.slug %>" <%= category && category.slug === cat.slug ? 'selected' : '' %>><%= cat.name %></option>
       <% }) %>
     </select>
-    <input class="rounded-xl border border-slate-700 bg-slate-950 px-4 py-2 text-sm" type="text" name="tag" placeholder="Tag" value="<%= tag %>" />
-    <button class="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900" type="submit">Filter</button>
+    <input class="field" type="text" name="tag" placeholder="Tag" value="<%= tag %>" />
+    <button class="btn btn-primary" type="submit">Filter</button>
   </form>
 </section>
 
-<section class="mt-8 grid gap-6 md:grid-cols-2">
+<section class="post-grid">
   <% posts.forEach(function(post) { %>
-    <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+    <article class="card post-card">
       <% if (post.coverImagePath) { %>
-        <img class="h-44 w-full rounded-xl object-cover" src="<%= post.coverImagePath %>" alt="<%= post.title %>" />
+        <img class="post-cover" src="<%= post.coverImagePath %>" alt="<%= post.title %>" />
       <% } %>
-      <p class="mt-4 text-xs text-slate-400"><%= formatDate(post.publishedAt || post.createdAt) %> ・ <%= estimateReadTime(post.content) %></p>
-      <h3 class="mt-2 text-lg font-semibold">
-        <a href="/blog/<%= post.slug %>" class="hover:text-white"><%= post.title %></a>
-      </h3>
-      <p class="mt-2 text-sm text-slate-300"><%= post.excerpt %></p>
-      <div class="mt-4 flex flex-wrap gap-2 text-xs text-slate-400">
-        <span class="rounded-full border border-slate-700 px-2 py-1"><%= post.category?.name || 'General' %></span>
+      <p class="meta"><%= formatDate(post.publishedAt || post.createdAt) %> �E <%= estimateReadTime(post.content) %></p>
+      <h3 class="title-md"><a href="/blog/<%= post.slug %>"><%= post.title %></a></h3>
+      <p class="muted"><%= post.excerpt %></p>
+      <div class="tag-row">
+        <span class="tag"><%= post.category?.name || 'General' %></span>
         <% post.tags.forEach(function(tag) { %>
-          <a class="rounded-full border border-slate-700 px-2 py-1 hover:text-white" href="/tag/<%= encodeURIComponent(tag) %>">#<%= tag %></a>
+          <a class="tag" href="/tag/<%= encodeURIComponent(tag) %>">#<%= tag %></a>
         <% }) %>
       </div>
     </article>
@@ -36,19 +34,18 @@
 </section>
 
 <% if (!posts.length) { %>
-  <p class="mt-6 text-sm text-slate-400">No posts found.</p>
+  <p class="muted">No posts found.</p>
 <% } %>
 
-<div class="mt-8 flex items-center justify-between text-sm">
+<div class="pager">
   <% if (page > 1) { %>
-    <a class="rounded-full border border-slate-700 px-4 py-2" href="/blog?page=<%= page - 1 %>&q=<%= q %>&category=<%= category ? category.slug : '' %>&tag=<%= tag %>">Previous</a>
+    <a class="btn btn-outline" href="/blog?page=<%= page - 1 %>&q=<%= q %>&category=<%= category ? category.slug : '' %>&tag=<%= tag %>">Previous</a>
   <% } else { %>
     <span></span>
   <% } %>
   <% if (page < totalPages) { %>
-    <a class="rounded-full border border-slate-700 px-4 py-2" href="/blog?page=<%= page + 1 %>&q=<%= q %>&category=<%= category ? category.slug : '' %>&tag=<%= tag %>">Next</a>
+    <a class="btn btn-outline" href="/blog?page=<%= page + 1 %>&q=<%= q %>&category=<%= category ? category.slug : '' %>&tag=<%= tag %>">Next</a>
   <% } %>
 </div>
 
 <%- include('../partials/footer') %>
-

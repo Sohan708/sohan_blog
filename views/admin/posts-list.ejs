@@ -1,30 +1,36 @@
 ﻿<%- include('../partials/header') %>
 
-<div class="grid gap-6 lg:grid-cols-[280px_1fr]">
+<div class="admin-layout">
   <%- include('../partials/admin-nav') %>
-  <section>
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-semibold">Posts</h1>
-      <a class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-900" href="/admin/posts/new">New post</a>
+  <section class="admin-panel">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Content</p>
+        <h1 class="section-title">Posts</h1>
+      </div>
+      <a class="btn btn-primary" href="/admin/posts/new">New post</a>
     </div>
-    <div class="mt-6 grid gap-4">
+    <div class="stack-list">
       <% posts.forEach(function(post) { %>
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 flex items-center justify-between">
-          <div>
-            <p class="text-xs text-slate-400"><%= formatDate(post.createdAt) %> ・ <%= post.status %></p>
-            <h3 class="text-lg font-semibold"><%= post.title %></h3>
-            <p class="text-sm text-slate-300">Category: <%= post.category?.name || 'General' %></p>
+        <div class="card list-row">
+          <div class="list-meta">
+            <% if (post.coverImagePath) { %>
+              <img class="list-thumb" src="<%= post.coverImagePath %>" alt="<%= post.title %>" />
+            <% } %>
+            <p class="meta"><%= formatDate(post.createdAt) %> ・ <%= post.status %></p>
+            <h3 class="title-md"><%= post.title %></h3>
+            <p class="muted">Category: <%= post.category?.name || 'General' %></p>
           </div>
-          <div class="flex gap-2">
-            <a class="rounded-full border border-slate-700 px-3 py-1 text-xs" href="/admin/posts/<%= post._id %>/edit">Edit</a>
+          <div class="button-row">
+            <a class="btn btn-outline" href="/admin/posts/<%= post._id %>/edit">Edit</a>
             <form method="post" action="/admin/posts/<%= post._id %>/delete">
-              <button class="rounded-full border border-red-500/60 px-3 py-1 text-xs text-red-300" type="submit">Delete</button>
+              <button class="btn btn-outline danger" type="submit">Delete</button>
             </form>
           </div>
         </div>
       <% }) %>
       <% if (!posts.length) { %>
-        <p class="text-sm text-slate-400">No posts yet.</p>
+        <p class="muted">No posts yet.</p>
       <% } %>
     </div>
   </section>

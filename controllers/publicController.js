@@ -5,6 +5,23 @@ import { formatDate, toIso } from '../utils/date.js';
 
 const POSTS_PER_PAGE = 6;
 
+function withCover(post) {
+  const data = post.toObject ? post.toObject() : post;
+  const content = data.content || '';
+  const match = content.match(/<img[^>]+src=["']([^"']+)["']/i);
+  const fallbackCover = match ? match[1] : null;
+  return {
+    ...data,
+    coverImagePath: data.coverImagePath || fallbackCover
+  };
+}
+
+function resolveOgImage(coverImagePath, baseUrl) {
+  if (!coverImagePath) return null;
+  if (/^https?:\/\//i.test(coverImagePath)) return coverImagePath;
+  return `${baseUrl}${coverImagePath}`;
+}
+
 export async function home(req, res, next) {
   try {
     const page = Math.max(1, parseInt(req.query.page || '1', 10));
@@ -24,8 +41,8 @@ export async function home(req, res, next) {
       title: 'Home',
       metaTitle: 'Home | Sohan Blog',
       metaDescription: 'Featured and latest posts.',
-      featured,
-      posts,
+      featured: featured.map(withCover),
+      posts: posts.map(withCover),
       page,
       totalPages: Math.ceil(total / POSTS_PER_PAGE),
       formatDate,
@@ -76,7 +93,7 @@ export async function blogList(req, res, next) {
       title: 'Blog',
       metaTitle: 'Blog | Sohan Blog',
       metaDescription: 'Browse the latest blog posts.',
-      posts,
+      posts: posts.map(withCover),
       page,
       totalPages: Math.ceil(total / POSTS_PER_PAGE),
       q,
@@ -93,7 +110,8 @@ export async function blogList(req, res, next) {
 
 export async function postDetail(req, res, next) {
   try {
-    const post = await Post.findOne({ slug: req.params.slug, status: 'published' }).populate('category');
+    const postDoc = await Post.findOne({ slug: req.params.slug, status: 'published' }).populate('category');
+    const post = postDoc ? withCover(postDoc) : null;
     if (!post) {
       return res.status(404).render('public/404', { title: 'Not Found' });
     }
@@ -106,11 +124,12 @@ export async function postDetail(req, res, next) {
       .sort({ publishedAt: -1, createdAt: -1 })
       .limit(3);
 
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     res.render('public/post', {
       title: post.metaTitle || post.title,
       metaTitle: post.metaTitle || post.title,
       metaDescription: post.metaDescription || post.excerpt,
-      ogImage: post.coverImagePath ? `${process.env.BASE_URL || 'http://localhost:3000'}${post.coverImagePath}` : null,
+      ogImage: resolveOgImage(post.coverImagePath, baseUrl),
       post,
       related,
       formatDate,

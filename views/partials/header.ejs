@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -13,20 +13,29 @@
   <% if (ogImage) { %>
     <meta property="og:image" content="<%= ogImage %>" />
   <% } %>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/main.css" />
 </head>
-<body class="min-h-screen bg-slate-950 text-slate-100">
-  <header class="border-b border-slate-800 bg-slate-950/70 backdrop-blur">
-    <div class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
-      <a class="text-lg font-semibold tracking-wide" href="/">Sohan Blog</a>
-      <nav class="flex items-center gap-4 text-sm">
-        <a class="hover:text-slate-300" href="/blog">Blog</a>
-        <a class="hover:text-slate-300" href="/rss.xml">RSS</a>
+<body>
+  <header class="site-header">
+    <div class="container header-top">
+      <span class="header-kicker">Independent news desk</span>
+      <span class="header-date"><%= new Date().toDateString() %></span>
+    </div>
+    <div class="container header-brand">
+      <a class="logo" href="/">Sohan Blog</a>
+    </div>
+    <div class="container header-nav">
+      <nav class="site-nav">
+        <a href="/">Home</a>
+        <a href="/blog">Latest</a>
+        <a href="/rss.xml">RSS</a>
         <% if (user) { %>
-          <a class="hover:text-slate-300" href="/admin">Admin</a>
+          <a href="/admin">Admin</a>
         <% } %>
       </nav>
     </div>
   </header>
-  <main class="mx-auto max-w-6xl px-4 py-10">
-
+  <main class="site-main container">

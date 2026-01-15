@@ -3,13 +3,7 @@ import Post from '../models/Post.js';
 import { slugify } from '../utils/slug.js';
 import { publishPost } from '../services/publishService.js';
 import { formatDate } from '../utils/date.js';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const uploadDir = path.join(__dirname, '..', 'public', 'uploads');
+import { uploadImage } from '../services/cloudinary.js';
 
 export async function dashboard(req, res, next) {
   try {
@@ -33,7 +27,16 @@ export async function dashboard(req, res, next) {
 export async function listPosts(req, res, next) {
   try {
     const posts = await Post.find({}).populate('category').sort({ createdAt: -1 });
-    res.render('admin/posts-list', { title: 'Posts', posts, formatDate });
+    const withCovers = posts.map((post) => {
+      const content = post.content || '';
+      const match = content.match(/<img[^>]+src=["']([^"']+)["']/i);
+      const fallbackCover = match ? match[1] : null;
+      return {
+        ...post.toObject(),
+        coverImagePath: post.coverImagePath || fallbackCover
+      };
+    });
+    res.render('admin/posts-list', { title: 'Posts', posts: withCovers, formatDate });
   } catch (error) {
     next(error);
   }
@@ -128,12 +131,14 @@ export async function createPost(req, res, next) {
     const scheduledAt = normalizeScheduledAt(req.body.scheduledAt);
     const status = scheduledAt && scheduledAt > new Date() ? 'draft' : req.body.status || 'draft';
 
+    const coverImageUrl = req.file ? await uploadImage(req.file) : null;
+
     const post = new Post({
       title: req.body.title,
       slug,
       excerpt: req.body.excerpt,
       content: req.body.content,
-      coverImagePath: req.file ? `/uploads/${req.file.filename}` : null,
+      coverImagePath: coverImageUrl,
       category: req.body.category,
       tags: parseTags(req.body.tags),
       status,
@@ -200,7 +205,7 @@ export async function updatePost(req, res, next) {
     post.metaTitle = req.body.metaTitle;
     post.metaDescription = req.body.metaDescription;
     if (req.file) {
-      post.coverImagePath = `/uploads/${req.file.filename}`;
+      post.coverImagePath = await uploadImage(req.file);
     }
 
     if (!wasPublished && status === 'published') {
@@ -294,7 +299,7 @@ export async function deleteTag(req, res, next) {
 
 export async function mediaPage(req, res, next) {
   try {
-    const files = await fs.readdir(uploadDir);
+    const files = await Post.distinct('coverImagePath', { coverImagePath: { $ne: null } });
     res.render('admin/media', { title: 'Media', files });
   } catch (error) {
     next(error);
@@ -303,9 +308,27 @@ export async function mediaPage(req, res, next) {
 
 export async function uploadMedia(req, res, next) {
   try {
+    if (req.file) {
+      await uploadImage(req.file);
+    }
     res.redirect('/admin/media');
   } catch (error) {
     next(error);
+  }
+}
+
+export async function uploadEditorImage(req, res, next) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+    const url = await uploadImage(req.file);
+    if (!url) {
+      return res.status(500).json({ error: 'Upload failed' });
+    }
+    return res.json({ url });
+  } catch (error) {
+    return next(error);
   }
 }
 

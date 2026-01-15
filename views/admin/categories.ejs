@@ -1,11 +1,16 @@
-﻿<%- include('../partials/header') %>
+<%- include('../partials/header') %>
 
-<div class="grid gap-6 lg:grid-cols-[280px_1fr]">
+<div class="admin-layout">
   <%- include('../partials/admin-nav') %>
-  <section>
-    <h1 class="text-2xl font-semibold">Categories</h1>
+  <section class="admin-panel">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Taxonomy</p>
+        <h1 class="section-title">Categories</h1>
+      </div>
+    </div>
     <% if (errors.length) { %>
-      <div class="mt-4 rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
+      <div class="alert">
         <ul>
           <% errors.forEach(function(error) { %>
             <li><%= error %></li>
@@ -13,28 +18,27 @@
         </ul>
       </div>
     <% } %>
-    <form class="mt-4 flex gap-3" method="post" action="/admin/categories">
-      <input class="flex-1 rounded-xl border border-slate-700 bg-slate-950 px-4 py-2 text-sm" type="text" name="name" placeholder="New category" required />
-      <button class="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900" type="submit">Add</button>
+    <form class="form-row" method="post" action="/admin/categories">
+      <input class="field" type="text" name="name" placeholder="New category" required />
+      <button class="btn btn-primary" type="submit">Add</button>
     </form>
-    <div class="mt-6 grid gap-3">
+    <div class="stack-list">
       <% categories.forEach(function(category) { %>
-        <div class="rounded-xl border border-slate-800 bg-slate-900/70 p-4 flex items-center justify-between">
+        <div class="card list-row">
           <div>
-            <p class="text-sm font-semibold"><%= category.name %></p>
-            <p class="text-xs text-slate-400"><%= category.slug %></p>
+            <p class="title-md"><%= category.name %></p>
+            <p class="meta"><%= category.slug %></p>
           </div>
           <form method="post" action="/admin/categories/<%= category._id %>/delete">
-            <button class="rounded-full border border-red-500/60 px-3 py-1 text-xs text-red-300" type="submit">Delete</button>
+            <button class="btn btn-outline danger" type="submit">Delete</button>
           </form>
         </div>
       <% }) %>
       <% if (!categories.length) { %>
-        <p class="text-sm text-slate-400">No categories yet.</p>
+        <p class="muted">No categories yet.</p>
       <% } %>
     </div>
   </section>
 </div>
 
 <%- include('../partials/footer') %>
-

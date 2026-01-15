@@ -30,6 +30,8 @@ npm run seed
 ```bash
 npm run dev
 ```
+Server running on port 3000:
+http://localhost:3000
 
 ## Environment variables
 - `PORT`
@@ -39,6 +41,8 @@ npm run dev
 - `ADMIN_PASSWORD`
 - `BASE_URL`
 - `WEBHOOK_URL` (optional)
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_UPLOAD_PRESET`
 
 ## Webhook payload
 When a post is published, a JSON payload is sent to `WEBHOOK_URL`:

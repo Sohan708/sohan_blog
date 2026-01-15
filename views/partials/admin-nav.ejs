@@ -1,16 +1,18 @@
-﻿<aside class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4">
-  <div class="flex items-center justify-between">
-    <h2 class="text-lg font-semibold">Admin</h2>
+<aside class="admin-nav">
+  <div class="admin-nav-head">
+    <div>
+      <p class="eyebrow">Control room</p>
+      <h2 class="section-title">Admin</h2>
+    </div>
     <form action="/admin/logout" method="post">
-      <button class="text-xs text-slate-300 hover:text-white" type="submit">Logout</button>
+      <button class="btn btn-outline" type="submit">Logout</button>
     </form>
   </div>
-  <nav class="mt-4 grid gap-2 text-sm">
-    <a class="hover:text-white" href="/admin">Dashboard</a>
-    <a class="hover:text-white" href="/admin/posts">Posts</a>
-    <a class="hover:text-white" href="/admin/categories">Categories</a>
-    <a class="hover:text-white" href="/admin/tags">Tags</a>
-    <a class="hover:text-white" href="/admin/media">Media</a>
+  <nav class="admin-links">
+    <a href="/admin">Dashboard</a>
+    <a href="/admin/posts">Posts</a>
+    <a href="/admin/categories">Categories</a>
+    <a href="/admin/tags">Tags</a>
+    <a href="/admin/media">Media</a>
   </nav>
 </aside>
-

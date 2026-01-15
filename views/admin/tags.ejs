@@ -1,24 +1,28 @@
-﻿<%- include('../partials/header') %>
+<%- include('../partials/header') %>
 
-<div class="grid gap-6 lg:grid-cols-[280px_1fr]">
+<div class="admin-layout">
   <%- include('../partials/admin-nav') %>
-  <section>
-    <h1 class="text-2xl font-semibold">Tags</h1>
-    <div class="mt-6 grid gap-3">
+  <section class="admin-panel">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Taxonomy</p>
+        <h1 class="section-title">Tags</h1>
+      </div>
+    </div>
+    <div class="stack-list">
       <% tags.forEach(function(tag) { %>
-        <div class="rounded-xl border border-slate-800 bg-slate-900/70 p-4 flex items-center justify-between">
-          <p class="text-sm font-semibold">#<%= tag %></p>
+        <div class="card list-row">
+          <p class="title-md">#<%= tag %></p>
           <form method="post" action="/admin/tags/<%= encodeURIComponent(tag) %>/delete">
-            <button class="rounded-full border border-red-500/60 px-3 py-1 text-xs text-red-300" type="submit">Remove</button>
+            <button class="btn btn-outline danger" type="submit">Remove</button>
           </form>
         </div>
       <% }) %>
       <% if (!tags.length) { %>
-        <p class="text-sm text-slate-400">No tags yet.</p>
+        <p class="muted">No tags yet.</p>
       <% } %>
     </div>
   </section>
 </div>
 
 <%- include('../partials/footer') %>
-

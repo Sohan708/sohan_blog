@@ -1,67 +1,68 @@
-﻿<%- include('../partials/header') %>
+<%- include('../partials/header') %>
 
-<section class="grid gap-8 lg:grid-cols-2">
-  <div>
-    <p class="text-sm uppercase tracking-[0.4em] text-slate-400">Custom CMS</p>
-    <h1 class="mt-4 text-4xl font-bold">Stories that build trust.</h1>
-    <p class="mt-4 text-slate-300">Curated insights, practical notes, and experiments from the studio.</p>
-    <div class="mt-6 flex gap-3">
-      <a class="rounded-full bg-white px-5 py-2 text-sm font-semibold text-slate-900" href="/blog">Explore posts</a>
-      <a class="rounded-full border border-slate-700 px-5 py-2 text-sm" href="/admin">Admin panel</a>
+<section class="hero-grid">
+  <div class="hero-copy">
+    <p class="eyebrow">Custom CMS</p>
+    <h1 class="display">Stories that build trust.</h1>
+    <p class="lead">Curated insights, practical notes, and experiments from the studio.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/blog">Explore posts</a>
+      <a class="btn btn-ghost" href="/admin">Admin panel</a>
     </div>
   </div>
-  <div class="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-800 p-6">
-    <h2 class="text-lg font-semibold">Featured</h2>
-    <div class="mt-4 grid gap-4">
+  <div class="card hero-panel">
+    <div class="card-head">
+      <h2 class="section-title">Featured</h2>
+      <span class="pill">Editor picks</span>
+    </div>
+    <div class="stack-list">
       <% featured.forEach(function(post) { %>
-        <article class="border border-slate-700 rounded-2xl p-4">
-          <p class="text-xs text-slate-400"><%= post.category?.name || 'General' %></p>
-          <h3 class="mt-2 text-lg font-semibold">
-            <a href="/blog/<%= post.slug %>" class="hover:text-white"><%= post.title %></a>
-          </h3>
-          <p class="mt-2 text-sm text-slate-300"><%= post.excerpt %></p>
+        <article class="card-min">
+          <p class="meta"><%= post.category?.name || 'General' %></p>
+          <h3 class="title-md"><a href="/blog/<%= post.slug %>"><%= post.title %></a></h3>
+          <p class="muted"><%= post.excerpt %></p>
         </article>
       <% }) %>
       <% if (!featured.length) { %>
-        <p class="text-sm text-slate-400">No featured posts yet.</p>
+        <p class="muted">No featured posts yet.</p>
       <% } %>
     </div>
   </div>
 </section>
 
-<section class="mt-12">
-  <div class="flex items-center justify-between">
-    <h2 class="text-2xl font-semibold">Latest posts</h2>
-    <a class="text-sm text-slate-300 hover:text-white" href="/blog">View all</a>
+<section class="section">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">Fresh reads</p>
+      <h2 class="section-title">Latest posts</h2>
+    </div>
+    <a class="text-link" href="/blog">View all</a>
   </div>
-  <div class="mt-6 grid gap-6 md:grid-cols-2">
+  <div class="post-grid">
     <% posts.forEach(function(post) { %>
-      <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <article class="card post-card">
         <% if (post.coverImagePath) { %>
-          <img class="h-44 w-full rounded-xl object-cover" src="<%= post.coverImagePath %>" alt="<%= post.title %>" />
+          <img class="post-cover" src="<%= post.coverImagePath %>" alt="<%= post.title %>" />
         <% } %>
-        <p class="mt-4 text-xs text-slate-400"><%= formatDate(post.publishedAt || post.createdAt) %> ・ <%= estimateReadTime(post.content) %></p>
-        <h3 class="mt-2 text-lg font-semibold">
-          <a href="/blog/<%= post.slug %>" class="hover:text-white"><%= post.title %></a>
-        </h3>
-        <p class="mt-2 text-sm text-slate-300"><%= post.excerpt %></p>
+        <p class="meta"><%= formatDate(post.publishedAt || post.createdAt) %> �E <%= estimateReadTime(post.content) %></p>
+        <h3 class="title-md"><a href="/blog/<%= post.slug %>"><%= post.title %></a></h3>
+        <p class="muted"><%= post.excerpt %></p>
       </article>
     <% }) %>
   </div>
   <% if (!posts.length) { %>
-    <p class="mt-6 text-sm text-slate-400">No posts yet.</p>
+    <p class="muted">No posts yet.</p>
   <% } %>
-  <div class="mt-8 flex items-center justify-between text-sm">
+  <div class="pager">
     <% if (page > 1) { %>
-      <a class="rounded-full border border-slate-700 px-4 py-2" href="/?page=<%= page - 1 %>">Previous</a>
+      <a class="btn btn-outline" href="/?page=<%= page - 1 %>">Previous</a>
     <% } else { %>
       <span></span>
     <% } %>
     <% if (page < totalPages) { %>
-      <a class="rounded-full border border-slate-700 px-4 py-2" href="/?page=<%= page + 1 %>">Next</a>
+      <a class="btn btn-outline" href="/?page=<%= page + 1 %>">Next</a>
     <% } %>
   </div>
 </section>
 
 <%- include('../partials/footer') %>
-

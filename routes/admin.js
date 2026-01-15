@@ -15,7 +15,8 @@ import {
   tagsPage,
   deleteTag,
   mediaPage,
-  uploadMedia
+  uploadMedia,
+  uploadEditorImage
 } from '../controllers/adminController.js';
 import { loginForm, login, logout } from '../controllers/authController.js';
 
@@ -42,6 +43,8 @@ router.post('/tags/:tag/delete', requireAuth, deleteTag);
 
 router.get('/media', requireAuth, mediaPage);
 router.post('/media', requireAuth, upload.single('media'), uploadMedia);
+router.post('/editor/upload', requireAuth, upload.single('file'), uploadEditorImage);
 
 export default router;
+
 
